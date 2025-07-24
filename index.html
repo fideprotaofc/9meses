@@ -1,0 +1,883 @@
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>9 Meses com Manuzinha</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter&family=Roboto&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <style>
+    /* Fonts */
+    body {
+      font-family: 'Inter', 'Roboto', sans-serif;
+      background: #ffe6f0;
+      color: #3a3a3a;
+      overflow-x: hidden;
+      scroll-behavior: smooth;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Great Vibes', cursive;
+      color: #d6336c;
+    }
+    /* Floating hearts animation */
+    .heart {
+      position: fixed;
+      bottom: -50px;
+      width: 20px;
+      height: 20px;
+      background: #f9c0d3;
+      clip-path: polygon(
+        50% 0%,
+        61% 10%,
+        68% 20%,
+        75% 30%,
+        80% 40%,
+        85% 50%,
+        90% 60%,
+        95% 70%,
+        100% 80%,
+        100% 90%,
+        90% 100%,
+        80% 100%,
+        70% 90%,
+        60% 80%,
+        50% 70%,
+        40% 80%,
+        30% 90%,
+        20% 100%,
+        10% 100%,
+        0% 90%,
+        0% 80%,
+        5% 70%,
+        10% 60%,
+        15% 50%,
+        20% 40%,
+        25% 30%,
+        32% 20%,
+        39% 10%
+      );
+      opacity: 0.7;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      animation-name: floatUp;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1) rotate(0deg);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-40px) scale(1.1) rotate(10deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(0.8) rotate(-10deg);
+        opacity: 0;
+      }
+    }
+    /* Typing animation */
+    .typing {
+      border-right: 2px solid #d6336c;
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 4s steps(50, end), blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+      from {
+        width: 0;
+      }
+      to {
+        width: 100%;
+      }
+    }
+    @keyframes blink-caret {
+      0%, 100% {
+        border-color: transparent;
+      }
+      50% {
+        border-color: #d6336c;
+      }
+    }
+    /* Scrollbar for textarea */
+    textarea::-webkit-scrollbar {
+      width: 6px;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background-color: #d6336c;
+      border-radius: 3px;
+    }
+    /* Scrollbar for body */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #ffe6f0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #d6336c;
+      border-radius: 10px;
+      border: 2px solid #ffe6f0;
+    }
+    /* Custom focus outline */
+    :focus-visible {
+      outline: 3px solid #d6336c;
+      outline-offset: 2px;
+    }
+    /* Smooth fade in */
+    .fade-in {
+      animation: fadeIn 1.5s ease forwards;
+      opacity: 0;
+    }
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+    /* Button hover scale */
+    .btn-hover:hover {
+      transform: scale(1.05);
+      transition: transform 0.3s ease;
+    }
+    /* Game board */
+    .game-cell {
+      aspect-ratio: 1 / 1;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+      border-radius: 0.75rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      color: #d6336c;
+      background-color: #ffe6f0;
+      box-shadow: 0 4px 6px rgba(214, 51, 108, 0.3);
+    }
+    .game-cell:hover:not(.disabled) {
+      background-color: #f9c0d3;
+    }
+    .game-cell.disabled {
+      cursor: default;
+      color: #a8325a;
+      background-color: #ffd9e3;
+    }
+    /* X and O icons */
+    .icon-x {
+      color: #d6336c;
+      filter: drop-shadow(0 0 1px #a8325a);
+    }
+    .icon-o {
+      color: #f48fb1;
+      filter: drop-shadow(0 0 1px #a8325a);
+    }
+    /* Animation for win */
+    .win-animation {
+      animation: winPulse 1.5s ease infinite alternate;
+    }
+    @keyframes winPulse {
+      0% {
+        transform: scale(1);
+        color: #d6336c;
+        text-shadow: 0 0 5px #f48fb1;
+      }
+      100% {
+        transform: scale(1.1);
+        color: #f48fb1;
+        text-shadow: 0 0 15px #d6336c;
+      }
+    }
+    /* Card icon animation */
+    .card-icon {
+      width: 80px;
+      height: 80px;
+      fill: #d6336c;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .card-icon:hover {
+      transform: scale(1.15) rotate(10deg);
+      filter: drop-shadow(0 0 5px #f48fb1);
+    }
+    /* Letter container */
+    .letter-container {
+      max-width: 600px;
+      background: #fff0f6;
+      border-radius: 1rem;
+      padding: 1.5rem 2rem;
+      box-shadow: 0 8px 20px rgba(214, 51, 108, 0.3);
+      font-size: 1.125rem;
+      line-height: 1.6;
+      color: #5a2a3a;
+      font-family: 'Inter', 'Roboto', sans-serif;
+      white-space: pre-wrap;
+      user-select: text;
+    }
+    /* Input style */
+    .password-input {
+      border: 2px solid #d6336c;
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      width: 100%;
+      max-width: 300px;
+      color: #5a2a3a;
+      background-color: #fff0f6;
+      transition: border-color 0.3s ease;
+    }
+    .password-input:focus {
+      border-color: #f48fb1;
+      outline: none;
+    }
+    /* Scroll to top button */
+    #scrollTopBtn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background-color: #d6336c;
+      color: white;
+      border: none;
+      border-radius: 9999px;
+      width: 3.5rem;
+      height: 3.5rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(214, 51, 108, 0.6);
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+    }
+    #scrollTopBtn:hover {
+      background-color: #f48fb1;
+      transform: scale(1.1);
+    }
+    /* Section padding */
+    section {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+    }
+    /* Navigation styles */
+    nav a {
+      font-weight: 600;
+      color: #d6336c;
+      transition: color 0.3s ease;
+    }
+    nav a:hover,
+    nav a:focus {
+      color: #f48fb1;
+      outline: none;
+    }
+    /* Responsive typography */
+    @media (min-width: 640px) {
+      h1 {
+        font-size: 3.5rem;
+      }
+      h2 {
+        font-size: 2.5rem;
+      }
+    }
+    @media (max-width: 639px) {
+      h1 {
+        font-size: 2.5rem;
+      }
+      h2 {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body class="relative bg-gradient-to-b from-[#ffe6f0] to-[#ffd9e3] text-gray-800">
+
+  <!-- Floating hearts container -->
+  <div id="hearts-container" aria-hidden="true"></div>
+
+  <!-- Navigation -->
+  <header class="fixed top-0 left-0 w-full bg-white bg-opacity-70 backdrop-blur-md shadow-md z-50">
+    <nav class="max-w-5xl mx-auto px-6 py-3 flex justify-center gap-8 text-lg select-none" aria-label="Menu de navegação">
+      <a href="#welcome" class="hover:text-pink-400 focus:text-pink-400 focus:outline-none transition">Bem-vindo</a>
+      <a href="#counters" class="hover:text-pink-400 focus:text-pink-400 focus:outline-none transition">Contadores</a>
+      <a href="#tictactoe" class="hover:text-pink-400 focus:text-pink-400 focus:outline-none transition">Jogo da Velha</a>
+      <a href="#letter" class="hover:text-pink-400 focus:text-pink-400 focus:outline-none transition">Carta</a>
+    </nav>
+  </header>
+
+  <main class="max-w-5xl mx-auto px-6 pt-24 pb-16 space-y-24">
+
+    <!-- 1. Tela de boas-vindas -->
+    <section id="welcome" class="text-center">
+      <h1
+        class="text-pink-600 font-great-vibes text-4xl sm:text-5xl md:text-6xl font-semibold leading-tight"
+        aria-label="Mensagem de boas-vindas animada"
+      >
+        <span id="welcome-text" class="typing inline-block"></span>
+      </h1>
+    </section>
+
+    <!-- 2. Contadores ao vivo -->
+    <section id="counters" class="bg-white bg-opacity-80 rounded-3xl p-8 shadow-lg">
+      <h2 class="text-center text-pink-600 font-great-vibes text-3xl mb-8 select-none">Contadores ao Vivo</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-6 text-center font-semibold text-pink-700">
+        <div>
+          <div class="text-5xl font-great-vibes" id="months-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Meses</div>
+        </div>
+        <div>
+          <div class="text-5xl font-great-vibes" id="days-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Dias</div>
+        </div>
+        <div>
+          <div class="text-5xl font-great-vibes" id="hours-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Horas</div>
+        </div>
+        <div>
+          <div class="text-5xl font-great-vibes" id="minutes-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Minutos</div>
+        </div>
+        <div>
+          <div class="text-5xl font-great-vibes" id="seconds-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Segundos</div>
+        </div>
+        <div>
+          <div class="text-5xl font-great-vibes" id="milliseconds-counter" aria-live="polite" aria-atomic="true">0</div>
+          <div class="text-sm text-pink-400 mt-1 select-none">Milésimos</div>
+        </div>
+      </div>
+      <div class="mt-10 text-center text-pink-600 font-semibold text-lg select-none">
+        <div>
+          <span id="love-count" aria-live="polite" aria-atomic="true">2.293</span> “Eu te amo” trocados
+        </div>
+        <div>
+          <span id="heartbeats-count" aria-live="polite" aria-atomic="true">100.000</span> batimentos cardíacos estimados
+        </div>
+        <div class="text-sm text-pink-400 mt-2 select-none">Essa é a média, pois não sei a contagem exata.</div>
+      </div>
+    </section>
+
+    <!-- 3. Jogo da velha personalizado -->
+    <section id="tictactoe" class="bg-white bg-opacity-80 rounded-3xl p-8 shadow-lg select-none">
+      <h2 class="text-center text-pink-600 font-great-vibes text-3xl mb-8">Jogo da Velha</h2>
+      <div class="max-w-md mx-auto bg-pink-50 rounded-3xl p-6 shadow-md relative">
+        <div
+          id="game-board"
+          class="grid grid-cols-3 gap-4"
+          role="grid"
+          aria-label="Tabuleiro do jogo da velha"
+        >
+          <button class="game-cell" role="gridcell" aria-label="Célula 1" data-cell-index="0" aria-pressed="false" tabindex="0"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 2" data-cell-index="1" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 3" data-cell-index="2" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 4" data-cell-index="3" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 5" data-cell-index="4" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 6" data-cell-index="5" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 7" data-cell-index="6" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 8" data-cell-index="7" aria-pressed="false" tabindex="-1"></button>
+          <button class="game-cell" role="gridcell" aria-label="Célula 9" data-cell-index="8" aria-pressed="false" tabindex="-1"></button>
+        </div>
+        <div
+          id="game-message"
+          class="mt-6 text-center text-pink-700 font-semibold text-xl min-h-[2.5rem]"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+        <button
+          id="game-reset"
+          class="mt-6 w-full bg-pink-600 hover:bg-pink-700 text-white font-semibold py-3 rounded-xl transition btn-hover focus:outline-none focus:ring-4 focus:ring-pink-300"
+          aria-label="Reiniciar jogo"
+        >
+          Reiniciar Jogo
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. Carta romântica com senha -->
+    <section id="letter" class="bg-white bg-opacity-80 rounded-3xl p-8 shadow-lg text-center">
+      <h2 class="text-pink-600 font-great-vibes text-3xl mb-8 select-none">Carta Romântica</h2>
+      <button
+        id="open-letter-btn"
+        aria-label="Abrir carta romântica"
+        class="mx-auto mb-6"
+      >
+        <svg
+          class="card-icon"
+          viewBox="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-labelledby="cardTitle cardDesc"
+          tabindex="0"
+        >
+          <title id="cardTitle">Ícone de carta romântica</title>
+          <desc id="cardDesc">Ícone estilizado de envelope rosa com coração</desc>
+          <rect x="4" y="12" width="56" height="40" rx="8" ry="8" fill="#d6336c" />
+          <polygon points="4,12 32,36 60,12" fill="#f48fb1" />
+          <path d="M20 24 L32 36 L44 24" stroke="#fff" stroke-width="2" fill="none" />
+          <circle cx="32" cy="30" r="5" fill="#fff" />
+          <path d="M32 25 L32 35" stroke="#d6336c" stroke-width="1" />
+          <path d="M27 30 L37 30" stroke="#d6336c" stroke-width="1" />
+        </svg>
+      </button>
+      <div id="password-container" class="mb-6 hidden">
+        <input
+          type="password"
+          id="password-input"
+          class="password-input mx-auto"
+          placeholder="Digite a senha"
+          aria-label="Campo para digitar a senha da carta"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          id="password-submit"
+          class="mt-4 bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-xl transition btn-hover focus:outline-none focus:ring-4 focus:ring-pink-300"
+          aria-label="Enviar senha"
+        >
+          Enviar
+        </button>
+        <div id="password-error" class="text-red-600 mt-2 font-semibold" role="alert" aria-live="assertive"></div>
+      </div>
+      <div id="letter-text" class="letter-container mx-auto hidden" aria-live="polite" aria-atomic="true" tabindex="0"></div>
+    </section>
+  </main>
+
+  <!-- Botão voltar ao topo -->
+  <button
+    id="scrollTopBtn"
+    aria-label="Voltar ao topo"
+    title="Voltar ao topo"
+  >
+    <i class="fas fa-arrow-up" aria-hidden="true"></i>
+  </button>
+
+  <script>
+    // Fonts fallback for Great Vibes in Tailwind config is not possible here, so we rely on CSS font-family.
+
+    // 1. Floating hearts animation
+    const heartsContainer = document.getElementById('hearts-container');
+    const heartsCount = 20;
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.width = 15 + Math.random() * 15 + 'px';
+      heart.style.height = heart.style.width;
+      heart.style.animationDuration = 6 + Math.random() * 6 + 's';
+      heart.style.animationDelay = Math.random() * 6 + 's';
+      heartsContainer.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 12000);
+    }
+
+    for (let i = 0; i < heartsCount; i++) {
+      setTimeout(createHeart, i * 500);
+    }
+    setInterval(createHeart, 800);
+
+    // 2. Tela de boas-vindas - animação de digitação
+    const welcomeText = document.getElementById('welcome-text');
+    const welcomeMessage = "Hoje completamos 9 meses, Manuzinha. Eu te amo muito!";
+
+    function typeText(element, text, speed = 60) {
+      let index = 0;
+      element.textContent = '';
+      return new Promise((resolve) => {
+        function type() {
+          if (index < text.length) {
+            element.textContent += text.charAt(index);
+            index++;
+            setTimeout(type, speed);
+          } else {
+            resolve();
+          }
+        }
+        type();
+      });
+    }
+    typeText(welcomeText, welcomeMessage);
+
+    // 3. Contadores ao vivo
+    const startDate = new Date('2024-10-26T00:00:00');
+    const monthsCounter = document.getElementById('months-counter');
+    const daysCounter = document.getElementById('days-counter');
+    const hoursCounter = document.getElementById('hours-counter');
+    const minutesCounter = document.getElementById('minutes-counter');
+    const secondsCounter = document.getElementById('seconds-counter');
+    const millisecondsCounter = document.getElementById('milliseconds-counter');
+    const loveCountEl = document.getElementById('love-count');
+    const heartbeatsCountEl = document.getElementById('heartbeats-count');
+
+    // Love count starts at 2293 and increases 6-15 per day randomly
+    // Heartbeats: 100,000 per day
+
+    function updateCounters() {
+      const now = new Date();
+      const diffMs = now - startDate;
+
+      // Calculate months difference (approximate)
+      let months = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+      if (now.getDate() < startDate.getDate()) months--;
+
+      // Calculate days, hours, minutes, seconds, milliseconds
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+      const diffMinutes = Math.floor((diffMs / (1000 * 60)) % 60);
+      const diffSeconds = Math.floor((diffMs / 1000) % 60);
+      const diffMilliseconds = Math.floor(diffMs % 1000);
+
+      monthsCounter.textContent = months >= 0 ? months : 0;
+      daysCounter.textContent = diffDays >= 0 ? diffDays : 0;
+      hoursCounter.textContent = diffHours >= 0 ? diffHours : 0;
+      minutesCounter.textContent = diffMinutes >= 0 ? diffMinutes : 0;
+      secondsCounter.textContent = diffSeconds >= 0 ? diffSeconds : 0;
+      millisecondsCounter.textContent = diffMilliseconds >= 0 ? diffMilliseconds : 0;
+
+      // Love count calculation
+      // Base 2293 at startDate, increase 6-15 per day randomly
+      // We'll simulate a smooth increase by calculating total days and adding a random average per day
+      // To keep it consistent, we use a seeded random based on day number
+
+      function seededRandom(seed) {
+        var x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+      }
+
+      let loveCount = 2293;
+      for (let i = 0; i < diffDays; i++) {
+        const rand = seededRandom(i + 1);
+        loveCount += 6 + Math.floor(rand * 10); // 6 to 15
+      }
+      // Add partial day progress (fractional)
+      const partialDay = (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60 * 24);
+      const randPartial = seededRandom(diffDays + 1);
+      loveCount += partialDay * (6 + Math.floor(randPartial * 10));
+
+      loveCountEl.textContent = Math.floor(loveCount).toLocaleString('pt-BR');
+
+      // Heartbeats: 100,000 per day * days + partial day
+      const heartbeats = 100000 * (diffDays + partialDay);
+      heartbeatsCountEl.textContent = Math.floor(heartbeats).toLocaleString('pt-BR');
+    }
+    updateCounters();
+    setInterval(updateCounters, 50);
+
+    // 4. Jogo da velha personalizado
+    const gameBoard = document.getElementById('game-board');
+    const gameCells = Array.from(gameBoard.querySelectorAll('button.game-cell'));
+    const gameMessage = document.getElementById('game-message');
+    const gameResetBtn = document.getElementById('game-reset');
+
+    // Game state
+    // 0 = empty, 1 = player (X), 2 = computer (O)
+    let boardState = Array(9).fill(0);
+    let playerTurn = true;
+    let gameOver = false;
+
+    // Winning combinations
+    const winningCombos = [
+      [0,1,2],
+      [3,4,5],
+      [6,7,8],
+      [0,3,6],
+      [1,4,7],
+      [2,5,8],
+      [0,4,8],
+      [2,4,6]
+    ];
+
+    // Icons for X and O (FontAwesome)
+    function createXIcon() {
+      const icon = document.createElement('i');
+      icon.className = 'fas fa-times icon-x';
+      icon.setAttribute('aria-hidden', 'true');
+      return icon;
+    }
+    function createOIcon() {
+      const icon = document.createElement('i');
+      icon.className = 'far fa-circle icon-o';
+      icon.setAttribute('aria-hidden', 'true');
+      return icon;
+    }
+
+    // Update ARIA and tabindex for accessibility
+    function updateAccessibility() {
+      gameCells.forEach((cell, i) => {
+        if (boardState[i] !== 0 || gameOver) {
+          cell.setAttribute('aria-pressed', 'true');
+          cell.classList.add('disabled');
+          cell.setAttribute('tabindex', '-1');
+        } else {
+          cell.setAttribute('aria-pressed', 'false');
+          cell.classList.remove('disabled');
+          cell.setAttribute('tabindex', '0');
+        }
+      });
+    }
+
+    // Check winner
+    function checkWinner(state) {
+      for (const combo of winningCombos) {
+        const [a,b,c] = combo;
+        if (state[a] && state[a] === state[b] && state[a] === state[c]) {
+          return { winner: state[a], combo };
+        }
+      }
+      if (state.every(cell => cell !== 0)) {
+        return { winner: 0 }; // Draw
+      }
+      return null;
+    }
+
+    // Highlight winning cells
+    function highlightWin(combo) {
+      combo.forEach(i => {
+        gameCells[i].classList.add('win-animation');
+      });
+    }
+
+    // Reset board UI
+    function resetBoardUI() {
+      gameCells.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('win-animation', 'disabled');
+        cell.setAttribute('aria-pressed', 'false');
+        cell.setAttribute('tabindex', '0');
+      });
+    }
+
+    // Player move
+    function playerMove(index) {
+      if (gameOver || boardState[index] !== 0) return false;
+      boardState[index] = 1;
+      renderBoard();
+      return true;
+    }
+
+    // Computer move - easy level: random empty cell
+    function computerMove() {
+      if (gameOver) return;
+      const emptyIndices = boardState.map((v,i) => v === 0 ? i : -1).filter(i => i !== -1);
+      if (emptyIndices.length === 0) return;
+      // Random choice
+      const choice = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+      boardState[choice] = 2;
+      renderBoard();
+    }
+
+    // Render board UI
+    function renderBoard() {
+      boardState.forEach((val, i) => {
+        const cell = gameCells[i];
+        cell.textContent = '';
+        if (val === 1) {
+          cell.appendChild(createXIcon());
+        } else if (val === 2) {
+          cell.appendChild(createOIcon());
+        }
+      });
+      updateAccessibility();
+      const result = checkWinner(boardState);
+      if (result) {
+        gameOver = true;
+        if (result.winner === 1) {
+          gameMessage.textContent = 'Você venceu! A senha é: 9months';
+          highlightWin(result.combo);
+          announceGameEnd('Você venceu! A senha é: 9months');
+        } else if (result.winner === 2) {
+          gameMessage.textContent = 'O computador venceu! Tente novamente.';
+          highlightWin(result.combo);
+          announceGameEnd('O computador venceu! Tente novamente.');
+        } else {
+          gameMessage.textContent = 'Empate! Tente novamente.';
+          announceGameEnd('Empate! Tente novamente.');
+        }
+      } else {
+        gameMessage.textContent = playerTurn ? 'Sua vez (X)' : 'Vez do computador (O)';
+      }
+    }
+
+    // Accessibility announcement for game end
+    function announceGameEnd(message) {
+      gameMessage.setAttribute('aria-live', 'assertive');
+      setTimeout(() => {
+        gameMessage.setAttribute('aria-live', 'polite');
+      }, 2000);
+    }
+
+    // Handle cell click
+    gameCells.forEach((cell, i) => {
+      cell.addEventListener('click', () => {
+        if (gameOver) return;
+        if (!playerTurn) return;
+        if (boardState[i] !== 0) return;
+        if (playerMove(i)) {
+          playerTurn = false;
+          setTimeout(() => {
+            computerMove();
+            playerTurn = true;
+          }, 600);
+        }
+      });
+      cell.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          cell.click();
+        }
+      });
+    });
+
+    // Reset game
+    gameResetBtn.addEventListener('click', () => {
+      boardState = Array(9).fill(0);
+      playerTurn = true;
+      gameOver = false;
+      gameMessage.textContent = 'Sua vez (X)';
+      resetBoardUI();
+    });
+
+    // Initialize game
+    resetBoardUI();
+    gameMessage.textContent = 'Sua vez (X)';
+
+    // 5. Carta romântica com senha
+    const openLetterBtn = document.getElementById('open-letter-btn');
+    const passwordContainer = document.getElementById('password-container');
+    const passwordInput = document.getElementById('password-input');
+    const passwordSubmit = document.getElementById('password-submit');
+    const passwordError = document.getElementById('password-error');
+    const letterText = document.getElementById('letter-text');
+
+    const letterContent = `Querida Manuzinha, 💖
+
+Hoje celebramos 9 meses juntos, e meu coração transborda de amor por você. Cada momento ao seu lado é um sonho que se realiza. Você é minha inspiração, minha alegria e meu tudo. 
+
+Te amo mais do que palavras podem expressar. Que venham muitos meses e anos para continuarmos escrevendo nossa linda história. 🌹
+
+Com todo meu amor,
+Seu namorado apaixonado.`;
+
+    // Emojis replaced by inline SVG icons for ❤️ and 🌹
+    // We'll replace emojis with inline SVG icons in the letter text dynamically
+
+    function replaceEmojisWithSVG(text) {
+      // ❤️ U+2764 U+FE0F
+      // 🌹 U+1F339
+      // 💖 U+1F496
+      // We'll replace these with inline SVG icons
+
+      const heartSVG = `<svg aria-hidden="true" role="img" class="inline w-5 h-5 align-text-bottom text-pink-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41 0.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`;
+      const roseSVG = `<svg aria-hidden="true" role="img" class="inline w-5 h-5 align-text-bottom text-pink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C10 6 7 7 7 7s3 1 5 0c2 1 5 0 5 0s-3-1-5-5z"/><path d="M12 7v15"/></svg>`;
+      const sparkleSVG = `<svg aria-hidden="true" role="img" class="inline w-5 h-5 align-text-bottom text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><polygon points="12 2 15 8 22 9 17 14 18 21 12 18 6 21 7 14 2 9 9 8 12 2"/></svg>`;
+
+      return text
+        .replace(/💖/g, sparkleSVG)
+        .replace(/❤️/g, heartSVG)
+        .replace(/🌹/g, roseSVG);
+    }
+
+    // Animate typing letter text
+    async function typeLetterText(text, element, speed = 40) {
+      element.innerHTML = '';
+      const replacedText = replaceEmojisWithSVG(text);
+      // We will parse replacedText as HTML and type it char by char preserving tags
+      // To do this, we parse replacedText into tokens (tags and text)
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(`<div>${replacedText}</div>`, 'text/html');
+      const container = doc.body.firstChild;
+
+      // Flatten nodes into array of text and elements
+      const nodes = [];
+      function flatten(node) {
+        if (node.nodeType === Node.TEXT_NODE) {
+          nodes.push({type: 'text', content: node.textContent});
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+          nodes.push({type: 'element', content: node.outerHTML});
+        }
+      }
+      container.childNodes.forEach(flatten);
+
+      // Type nodes sequentially
+      for (const node of nodes) {
+        if (node.type === 'element') {
+          element.innerHTML += node.content;
+          await new Promise(r => setTimeout(r, speed * 3));
+        } else {
+          for (let i = 0; i < node.content.length; i++) {
+            element.innerHTML += node.content.charAt(i);
+            await new Promise(r => setTimeout(r, speed));
+          }
+        }
+      }
+    }
+
+    openLetterBtn.addEventListener('click', () => {
+      passwordContainer.classList.toggle('hidden');
+      letterText.classList.add('hidden');
+      passwordError.textContent = '';
+      passwordInput.value = '';
+      passwordInput.focus();
+    });
+
+    passwordSubmit.addEventListener('click', () => {
+      const val = passwordInput.value.trim();
+      if (val.toLowerCase() === '9months') {
+        passwordError.textContent = '';
+        passwordContainer.classList.add('hidden');
+        letterText.classList.remove('hidden');
+        typeLetterText(letterContent, letterText);
+        letterText.focus();
+      } else {
+        passwordError.textContent = 'Senha incorreta. Tente novamente.';
+        passwordInput.focus();
+      }
+    });
+
+    passwordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        passwordSubmit.click();
+      }
+    });
+
+    // 6. Botão voltar ao topo
+    const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        scrollTopBtn.style.display = 'block';
+      } else {
+        scrollTopBtn.style.display = 'none';
+      }
+    });
+
+    scrollTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Initially hide scrollTopBtn
+    scrollTopBtn.style.display = 'none';
+
+    // 7. Smooth scroll for nav links (already handled by CSS scroll-behavior: smooth)
+    // But for accessibility, we add focus after scroll
+    document.querySelectorAll('nav a').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            target.setAttribute('tabindex', '-1');
+            target.focus();
+            target.removeAttribute('tabindex');
+          }, 500);
+        }
+      });
+    });
+  </script>
+</body>
+</html>
